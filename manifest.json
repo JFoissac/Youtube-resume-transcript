@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Transcription & Summary",
+  "version": "1.0",
+  "description": "Transcrit les vidéos YouTube et génère un résumé via ChatGPT",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["src/contentScript.tsx"]
+    }
+  ]
+}
