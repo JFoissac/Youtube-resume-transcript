@@ -1,38 +1,39 @@
-export type LogType = 'success' | 'error' | 'info' | 'warning';
-type LogEntry = {
+interface LogEntry {
   message: string;
   type: LogType;
   timestamp: string;
   details?: string;
+}
+
+export type LogType = 'success' | 'error' | 'info' | 'warning';
+
+const logStore = {
+  entries: [] as LogEntry[],
+  maxEntries: 100
 };
 
-export class Logger {
-  private static logs: LogEntry[] = [];
-  private static maxLogs = 100;
+export function log(message: string, type: LogType = 'info', details?: string) {
+  const entry = {
+    message,
+    type,
+    timestamp: new Date().toLocaleTimeString(),
+    details
+  };
 
-  static log(message: string, type: LogType = 'info', details?: string) {
-    const entry = {
-      message,
-      type,
-      timestamp: new Date().toLocaleTimeString(),
-      details
-    };
-
-    this.logs.unshift(entry);
-    if (this.logs.length > this.maxLogs) {
-      this.logs.pop();
-    }
-
-    // Envoie le log à la page de logs si elle est ouverte
-    chrome.runtime.sendMessage({
-      action: 'NEW_LOG',
-      log: entry
-    });
-
-    console.log(`[${entry.type.toUpperCase()}] ${entry.message}`, details || '');
+  logStore.entries.unshift(entry);
+  if (logStore.entries.length > logStore.maxEntries) {
+    logStore.entries.pop();
   }
 
-  static getLogs() {
-    return this.logs;
-  }
+  // Envoie le log à la page de logs si elle est ouverte
+  chrome.runtime.sendMessage({
+    action: 'NEW_LOG',
+    log: entry
+  });
+
+  console.log(`[${entry.type.toUpperCase()}] ${entry.message}`, details || '');
+}
+
+export function getLogs() {
+  return logStore.entries;
 }

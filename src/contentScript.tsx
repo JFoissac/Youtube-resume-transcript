@@ -1,6 +1,6 @@
 import { CONFIG } from "./config/settings";
-import { ErrorHandler } from "./utils/errorHandler";
-import { TranscriptionManager } from "./utils/transcriptionManager";
+import { handleError, showNotification } from "./utils/errorHandler";
+import { getTranscription, getVideoId, copyToClipboard } from "./utils/transcriptionManager";
 
 // Fonction principale qui injecte le bouton dans l'interface YouTube
 function injectButton() {
@@ -90,7 +90,7 @@ function addIconEventListeners(button: HTMLElement) {
         try {
           await handleTranscription(url);
         } catch (error) {
-          ErrorHandler.showNotification(ErrorHandler.handle(error));
+          showNotification(handleError(error));
         }
       }
     });
@@ -99,15 +99,12 @@ function addIconEventListeners(button: HTMLElement) {
 
 // Gère le processus de transcription et d'envoi vers l'IA
 async function handleTranscription(aiUrl: string) {
-  // Récupère l'ID de la vidéo depuis l'URL
-  const videoId = TranscriptionManager.getVideoId(window.location.href);
-  const transcriptionText = await TranscriptionManager.getTranscription(videoId);
+  const videoId = getVideoId(window.location.href);
+  const transcriptionText = await getTranscription(videoId);
   const fullText = CONFIG.TRANSCRIPTION.prompt + transcriptionText;
 
-  // Copie le texte dans le presse-papiers
-  await TranscriptionManager.copyToClipboard(fullText);
+  await copyToClipboard(fullText);
 
-  // Ouvre l'IA dans un nouvel onglet et envoie le message via le background script
   const newTab = window.open(aiUrl, "_blank");
   if (newTab) {
     chrome.runtime.sendMessage({
@@ -134,7 +131,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     Promise.resolve()
       .then(() => handleTranscription(CONFIG.AI_MODELS.CHATGPT.url))
       .then(() => sendResponse({ success: true }))
-      .catch((error) => sendResponse({ error: ErrorHandler.handle(error) }));
-    return true; // Indique que la réponse sera envoyée de manière asynchrone
+      .catch((error) => sendResponse({ error: handleError(error) }));
+    return true;
   }
 });
