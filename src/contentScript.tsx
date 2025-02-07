@@ -1,9 +1,15 @@
 import { CONFIG } from "./config/settings";
 import { handleError, showNotification } from "./utils/errorHandler";
 import { getTranscription, getVideoId, copyToClipboard } from "./utils/transcriptionManager";
+import { isVideoWatch } from "./utils/urlUtils";
 
 // Fonction principale qui injecte le bouton dans l'interface YouTube
 function injectButton() {
+  // Vérifie d'abord si on est sur une page de lecture vidéo
+  if (!isVideoWatch(window.location.href)) {
+    return;
+  }
+
   // Recherche le conteneur des boutons like/dislike
   const likeContainer = document.querySelector(CONFIG.SELECTORS.LIKE_CONTAINER);
 

@@ -10,15 +10,14 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html"),
         contentScript: resolve(__dirname, "src/contentScript.tsx"),
-        claudeInjector: resolve(__dirname, "src/utils/claudeInjector.ts"),
         background: resolve(__dirname, "src/background.ts"),
-        logs: resolve(__dirname, "src/logs.ts"),
+        chatgptInjector: resolve(__dirname, "src/chatgptInjector.ts"),
+        popup: resolve(__dirname, "index.html"),
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          if (["contentScript", "claudeInjector", "background", "logs"].includes(chunkInfo.name)) {
+          if (["contentScript", "background", "chatgptInjector"].includes(chunkInfo.name)) {
             return "[name].js";
           }
           return "assets/[name].[hash].js";

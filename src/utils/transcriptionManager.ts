@@ -52,22 +52,13 @@ export function getVideoId(url: string): string {
 
 export async function sendToAI(text: string, aiUrl: string): Promise<void> {
   log(`Envoi vers ${aiUrl}`, "info");
-  const aiTab = window.open(aiUrl, "_blank");
 
-  if (aiTab) {
-    if (aiUrl.includes("claude.ai")) {
-      log("Attente du chargement de Claude...", "info");
-      await new Promise((resolve) => setTimeout(resolve, 3500));
-      aiTab.postMessage(
-        {
-          action: "PASTE_TO_CLAUDE",
-          text: text,
-        },
-        "*"
-      );
-      log("Texte envoyé à Claude", "success");
-    }
-  } else {
-    log("Impossible d'ouvrir l'onglet IA", "error");
-  }
+  // On envoie uniquement le message au background script
+  chrome.runtime.sendMessage({
+    action: "SEND_TO_AI",
+    data: {
+      text,
+      url: aiUrl,
+    },
+  });
 }

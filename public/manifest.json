@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Extraire et résumer les transcriptions YouTube avec ChatGPT",
   "permissions": ["activeTab", "scripting", "clipboardWrite", "tabs"],
-  "host_permissions": ["*://*.youtube.com/*", "*://*.claude.ai/*", "*://*.chatgpt.com/*", "*://*.deepseek.com/*"],
+  "host_permissions": ["*://*.youtube.com/*", "*://*.chat.openai.com/*", "*://*.claude.ai/*", "*://*.deepseek.com/*"],
   "action": {
     "default_popup": "index.html",
     "default_icon": "icon.png"
@@ -15,12 +15,11 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["contentScript.js"],
-      "run_at": "document_end"
+      "js": ["contentScript.js"]
     },
     {
-      "matches": ["*://*.claude.ai/*", "*://*.chatgpt.com/*", "*://*.deepseek.com/*"],
-      "js": ["claudeInjector.js"]
+      "matches": ["*://*.chat.openai.com/*"],
+      "js": ["chatgptInjector.js"]
     }
   ],
   "background": {
