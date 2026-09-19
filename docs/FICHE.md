@@ -113,7 +113,7 @@ npx tsc --noEmit
 
 ## 9. Liens
 - Plan en cours : —
-- Décisions : `docs/adr/` (pas encore créé)
+- Décisions : `docs/decisions/` (pas encore créé)
 - Runbook : `docs/RUNBOOK.md` (pas encore créé)
 - Dépôt : https://github.com/JFoissac/Youtube-resume-transcript.git
 - Fiche dans le vault : `DevBrain/10-PROJETS/YtResumeExtension/FICHE.md` (jonction sur ce fichier)
